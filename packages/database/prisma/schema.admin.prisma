@@ -1,0 +1,34 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL") // Primary admin database URL
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/client-admin"
+}
+
+model Organization {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  subdomain        String   @unique
+  country          String   @default("IN")
+  subscriptionPlan String   @default("FREE")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  users            User[]
+}
+
+model User {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  email          String       @unique
+  passwordHash   String
+  name           String
+  isActive       Boolean      @default(true)
+  organizationId String       @db.ObjectId
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roleId         String?      @db.ObjectId // Reference to Role in Tenant DB
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
