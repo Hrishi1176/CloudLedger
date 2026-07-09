@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run generate && tsc",
     "db:push": "prisma db push --schema=prisma/schema.admin.prisma && prisma db push --schema=prisma/schema.tenant.prisma",
     "generate": "prisma generate --schema=prisma/schema.admin.prisma && prisma generate --schema=prisma/schema.tenant.prisma"
   },
