@@ -1,0 +1,18 @@
+{
+  "name": "@sales-crm/database",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "db:push": "prisma db push --schema=prisma/schema.admin.prisma && prisma db push --schema=prisma/schema.tenant.prisma",
+    "generate": "prisma generate --schema=prisma/schema.admin.prisma && prisma generate --schema=prisma/schema.tenant.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.0.0",
+    "typescript": "^5"
+  }
+}

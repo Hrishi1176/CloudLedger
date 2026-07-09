@@ -1,0 +1,98 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("TENANT_DATABASE_URL") // Dummy URL, overridden at runtime
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/client-tenant"
+}
+
+model Role {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  name           String       @unique
+  permissionIds  String[]     @db.ObjectId
+  permissions    Permission[] @relation(fields: [permissionIds], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Permission {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  action         String   @unique
+  description    String?
+  roleIds        String[] @db.ObjectId
+  roles          Role[]   @relation(fields: [roleIds], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AccountGroup {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  name           String         @unique
+  description    String?
+  parentGroupId  String?        @db.ObjectId
+  parentGroup    AccountGroup?  @relation("GroupToGroup", fields: [parentGroupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subGroups      AccountGroup[] @relation("GroupToGroup")
+  accounts       Account[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Account {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  name           String         @unique
+  groupId        String         @db.ObjectId
+  group          AccountGroup   @relation(fields: [groupId], references: [id])
+  openingBalance Float          @default(0)
+  balanceType    String         @default("DEBIT")
+  voucherEntries VoucherEntry[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Voucher {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  voucherNumber    String
+  date             DateTime
+  type             String
+  narration        String?
+  entries          VoucherEntry[]
+  inventoryEntries InventoryEntry[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@unique([voucherNumber, type])
+}
+
+model VoucherEntry {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  voucherId      String       @db.ObjectId
+  voucher        Voucher      @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  accountId      String       @db.ObjectId
+  account        Account      @relation(fields: [accountId], references: [id])
+  amount         Float
+  type           String
+}
+
+model Item {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  name             String           @unique
+  uom              String
+  openingStock     Float            @default(0)
+  openingRate      Float            @default(0)
+  inventoryEntries InventoryEntry[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model InventoryEntry {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  voucherId      String       @db.ObjectId
+  voucher        Voucher      @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  itemId         String       @db.ObjectId
+  item           Item         @relation(fields: [itemId], references: [id])
+  quantity       Float
+  rate           Float
+  amount         Float
+}
