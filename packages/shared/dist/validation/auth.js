@@ -11,7 +11,8 @@ exports.registerSchema = zod_1.z.object({
         .string()
         .min(2, 'Subdomain must be at least 2 characters')
         .regex(/^[a-z0-9-]+$/, 'Subdomain must contain only lowercase letters, numbers, and dashes'),
-    country: zod_1.z.string().length(2, 'Country code must be 2 characters (e.g. IN, US)')
+    country: zod_1.z.string().length(2, 'Country code must be 2 characters (e.g. IN, US)'),
+    plan: zod_1.z.string().optional()
 });
 exports.loginSchema = zod_1.z.object({
     email: zod_1.z.string().email('Invalid email address'),
