@@ -6,6 +6,7 @@ export declare const registerSchema: z.ZodObject<{
     companyName: z.ZodString;
     subdomain: z.ZodString;
     country: z.ZodString;
+    plan: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     name: string;
     email: string;
@@ -13,6 +14,7 @@ export declare const registerSchema: z.ZodObject<{
     companyName: string;
     subdomain: string;
     country: string;
+    plan?: string | undefined;
 }, {
     name: string;
     email: string;
@@ -20,6 +22,7 @@ export declare const registerSchema: z.ZodObject<{
     companyName: string;
     subdomain: string;
     country: string;
+    plan?: string | undefined;
 }>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export declare const loginSchema: z.ZodObject<{
