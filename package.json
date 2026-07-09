@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "concurrently -n \"api,web\" -c \"blue,green\" \"npm run dev -w @sales-crm/api\" \"npm run dev -w @sales-crm/web\"",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @sales-crm/shared && npm run build -w @sales-crm/database && npm run build -w @sales-crm/auth && npm run build -w @sales-crm/ui && npm run build -w @sales-crm/api && npm run build -w @sales-crm/web",
     "start": "npm run start --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },
